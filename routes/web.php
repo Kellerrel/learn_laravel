@@ -20,35 +20,70 @@ Route::get('/', function () {
 
 });
 
-Route::get('/', function () {
+
+// index
+Route::get('/ideas', function () {
     // $ideas = session()->get('ideas', []);
-
     // $ideas = DB::table('ideas')->get();
+    // $ideas = Idea::where('state','pending')->get(); //if spesific, can't use all
+    $ideas = Idea::all();
 
-   // $ideas = Idea::where('state','pending')->get(); //if spesific, can't use all
-    $ideas = Idea::query()
-    ->when(request('state'), function ($query, $state) {
-        $query->where('state', $state);
-    })
-    ->get();
-
-    return view('ideas', [
+    return view('ideas.index', [
     'ideas'=>$ideas,
     ]);
 });
 
+//show action
+Route::get('/ideas/{idea}', function (Idea $idea) {
+
+
+    //$idea = Idea::findOrFail($id); //find or if not found 404 error
+
+    //if(is_null($idea)) {
+    //    abort(404);
+    //}
+
+    return view('ideas.show', [
+    'idea'=>$idea,
+    ]);
+});
+
+//edit action
+Route::get('/ideas/{idea}/edit', function (Idea $idea) {
+
+    return view('ideas.edit', [
+    'idea'=>$idea,
+    ]);
+});
+
+//update action
+Route::patch('/ideas/{idea}', function (Idea $idea) {
+    $idea->update([
+        'description'=> request('description'),
+    ]);
+    return redirect("/ideas/{$idea->id}");
+});
+
+//store action
 Route::post('/ideas', function () {
-    $idea = request('idea'); //grab the idea
+    //$idea = request('idea'); //grab the idea
 
     Idea::create([
     'description'=>request('idea'),
     'state'=>'pending',
     ]);
-    return redirect('/'); //return to home
+    return redirect('/ideas'); //return to home
 });
 
-// Temporary
-Route::get('/delete-ideas', function () {
-    session()->forget('ideas');
-    return redirect('/');
+//destroy action
+Route::delete('/ideas/{idea}', function (Idea $idea) {
+    $idea->delete();
+
+    return redirect('/ideas'); //return to home
 });
+
+//// Temporary
+//Route::get('/delete-ideas', function () {
+//    Idea::truncate();
+//    return redirect('/');
+//});
