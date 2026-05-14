@@ -24,7 +24,7 @@
     </style>
 </head>
 
-<body class="bg-gray-700 p-6 max-w-xl mx-auto">
+<body class="bg-gray-700 p-6 max-w-xl mx-auto text-white">
     <nav>
         <a href="/">Home</a>
         <a href="/about">About Us</a>
